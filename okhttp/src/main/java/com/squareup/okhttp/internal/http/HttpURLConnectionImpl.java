@@ -109,9 +109,15 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
 
   @Override public final void disconnect() {
     // Calling disconnect() before a connection exists should have no effect.
-    if (httpEngine != null) {
-      httpEngine.close();
+    if (httpEngine == null) return;
+
+    try {
+      httpEngine.disconnect();
+    } catch (IOException ignored) {
     }
+
+    // TODO: use some kind of synchronization to close the streams? Perhaps
+    // wrap the returned InputStream and OutputStream with synchronization.
   }
 
   /**
